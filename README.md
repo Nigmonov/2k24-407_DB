@@ -86,8 +86,7 @@ Write a query to calculate the average score of all students for each course and
 
 ## Expected results
 
-1. **Screenshots** of all executed queries and their results in printed form.
-2. **SQL script** Uploaded to GitHub.
-3. **Defense** Defense of completed lab work #2.
+1. **SQL script** Uploaded to GitHub(create Pull Request) and Hemis(in Word format you need send link your repository).
+2. **Defense** Defense of completed lab work #2.
 
 ---
