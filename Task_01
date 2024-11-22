@@ -1,0 +1,156 @@
+select * from students;
+
+
+
+CREATE TABLE courses (
+    course_id SERIAL PRIMARY KEY,
+    course_name VARCHAR(100),
+    credit_hours INTEGER
+);
+
+
+
+CREATE TABLE enrollments (
+    enrollment_id SERIAL PRIMARY KEY,
+    student_id INTEGER REFERENCES students(student_id),
+    course_id INTEGER REFERENCES courses(course_id),
+    grade INTEGER
+);
+
+select * from students;
+select * from courses;
+select * from enrollments;
+
+
+
+
+--1. Barcha talabalarni ismi, familiyasi va tug‘ilgan sanasi bilan ko‘rsating
+SELECT first_name, last_name, birthdate FROM students;
+
+
+
+--2. Matematika kursiga yozilgan talabalarni toping
+SELECT students.first_name, students.last_name FROM students
+JOIN enrollments ON students.student_id = enrollments.student_id
+JOIN courses ON enrollments.course_id = courses.course_id
+WHERE courses.course_name = 'Mathematics';
+
+
+
+--3. GPA 4 dan past bo‘lgan talabalarni ko‘rsating
+SELECT students.first_name, students.last_name, ROUND(AVG(enrollments.grade), 1) AS gpa
+FROM students JOIN enrollments ON students.student_id = enrollments.student_id
+GROUP BY students.student_id, students.first_name, students.last_name HAVING AVG(enrollments.grade) < 4;
+
+
+
+--3.2. Joinlardan foydalanish
+
+--1. Talabalarni yozilgan kurslari bilan ko‘rsating
+SELECT students.first_name, students.last_name, courses.course_name  FROM students
+JOIN enrollments ON students.student_id = enrollments.student_id 
+JOIN courses ON enrollments.course_id = courses.course_id;
+
+
+
+--2. Hech qanday kursga yozilmagan talabalarni toping
+SELECT first_name, last_name
+FROM students
+WHERE student_id NOT IN (SELECT student_id FROM enrollments);
+
+
+
+--3.3. Guruhlash va aggregatsiyalar
+
+--1. Har bir kursga yozilgan talabalar sonini hisoblang
+SELECT courses.course_name, COUNT(enrollments.student_id) AS student_count FROM courses
+LEFT JOIN enrollments ON courses.course_id = enrollments.course_id GROUP BY courses.course_name;
+
+
+
+--2. Eng ko‘p talaba yozilgan kursni toping
+SELECT courses.course_name FROM courses
+JOIN enrollments ON courses.course_id = enrollments.course_id
+GROUP BY courses.course_name ORDER BY COUNT(enrollments.student_id) DESC LIMIT 1;
+
+
+
+--3.4. Filtrlash va tartiblash
+-- 1. Talabalarni familiyasi bo‘yicha tartiblang:
+SELECT first_name, last_name
+FROM students
+ORDER BY last_name;
+
+
+
+-- 2. 2015-yildan keyin yozilgan va Tarix kursiga yozilgan talabalarni toping:
+SELECT students.first_name, students.last_name FROM students
+JOIN enrollments ON students.student_id = enrollments.student_id
+JOIN courses ON enrollments.course_id = courses.course_id
+WHERE students.enrollment_year > 2015-01-01 
+AND courses.course_name = 'History';
+
+
+
+
+-- 3.5. Subqueries
+
+--1. O‘rtacha kurs sonidan ko‘proq kursga yozilgan talabalarni toping:
+SELECT s.first_name, s.last_name FROM students s
+WHERE (SELECT COUNT(*) FROM enrollments e WHERE e.student_id = s.student_id) >
+(SELECT AVG(course_count) FROM (SELECT COUNT(*) AS course_count FROM enrollments GROUP BY student_id) subquery);
+
+
+
+-- 2. O‘rtacha bahosi eng past bo‘lgan talabalar yozilgan kurslar nomini ko‘rsating:
+SELECT  courses.course_name FROM courses JOIN enrollments ON courses.course_id = enrollments.course_id
+WHERE enrollments.student_id = (SELECT enrollments.student_id FROM enrollments GROUP BY enrollments.student_id
+ORDER BY AVG(enrollments.grade) LIMIT 1);
+
+
+
+-- 1. Barcha 4 bahoga ega talabalarni bahosini 3 ga o‘zgartiring:
+UPDATE enrollments
+SET grade = 3
+WHERE grade = 4;
+
+
+--2. Hech qanday kursga yozilmagan barcha talabalarni o‘chiring:
+DELETE FROM students
+WHERE student_id NOT IN (SELECT student_id FROM enrollments);
+
+
+
+-- 3. Yangi talaba qo‘shing va uni ikkita kursga yozing:
+
+-- 1. Yangi talaba qo'shish
+INSERT INTO students (first_name, last_name, birthdate, enrollment_year)
+VALUES ('Shaxzod', 'Muxtorov', '2005-05-07', 2024-10-22);
+INSERT INTO enrollments (student_id, course_id, grade)
+VALUES(
+(SELECT student_id FROM students WHERE first_name = 'Shaxzod' AND last_name = 'Muxtorov'),
+    1, 5  -- Kurs 1, 5 ball),
+(
+(SELECT student_id FROM students WHERE first_name = 'Shaxzod' AND last_name = 'Muxtorov'),
+2, 4  -- Kurs 2, 4 ball);
+
+
+
+
+
+-- 4. Qo‘shimcha vazifa
+
+-- Kurslar bo‘yicha o‘rtacha baholarni hisoblash va natijani formatda chiqarish:
+SELECT courses.course_name, ROUND(AVG(enrollments.grade), 2) AS average_score FROM 
+courses JOIN enrollments ON courses.course_id = enrollments.course_id GROUP BY courses.course_name;
+
+
+
+
+
+
+
+
+
+
+
