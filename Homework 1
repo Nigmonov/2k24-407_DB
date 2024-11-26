@@ -3,14 +3,6 @@ CREATE TABLE courses (
     course_name VARCHAR(100),
     credit_hours INTEGER
 );
--- CREATE TABLE enrollments (
---     enrollment_id SERIAL PRIMARY KEY,
---     student_id INTEGER NOT NULL,
---     course_id INTEGER NOT NULL,
---     grade INTEGER,
---     FOREIGN KEY (student_id) REFERENCES students(student_id),
---     FOREIGN KEY (course_id) REFERENCES courses(course_identifikatori)
--- );
 CREATE TABLE enrollments (
     enrollment_id SERIAL PRIMARY KEY,
     student_id INTEGER REFERENCES students(student_id),
