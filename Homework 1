@@ -89,8 +89,6 @@ WHERE student_id NOT IN (SELECT student_id FROM enrollments);
 INSERT INTO students (first_name, last_name, birthdate)
 VALUES ('Kamtarbek', 'Azimjonov', '2000-05-15');
 INSERT INTO enrollments (student_id, course_id, grade)
-VALUES 
-INSERT INTO enrollments (student_id, course_id, grade)
 VALUES(
 (SELECT student_id FROM students WHERE first_name = 'Samandar' AND last_name = 'Iskandarov'),
     1, 5  ),
