@@ -182,3 +182,4 @@ INSERT INTO enrollments (student_id, course_id, grade)
 VALUES 
     ((SELECT student_id FROM students WHERE name = 'Sardorbek'), 1, 5),
     ((SELECT student_id FROM students WHERE name = 'Sardorbek'), 2, 5);
+
