@@ -74,7 +74,6 @@ VALUES
 (2, 7, 2),
 (3, 8, 4);
 
-
 -- -- 3.1. Queries
 -- 1
 SELECT name, age, birth_date
