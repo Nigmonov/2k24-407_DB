@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS students (
     enrollment_year INT
 );
 
-CREATE TABLE if not exists courses (
+create table if not exists courses (
     course_id SERIAL PRIMARY KEY,
     course_name VARCHAR(100),
     credit_hours INTEGER
